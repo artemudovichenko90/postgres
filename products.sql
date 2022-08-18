@@ -8,34 +8,34 @@ DROP TABLE IF EXISTS products;
 -- товары
 CREATE TABLE products(
   id BIGSERIAL PRIMARY KEY,
-  code VARCHAR(12) NOT NULL UNIQUE CHECK(length(trim("code")) >= 1),
-  name VARCHAR(100) NOT NULL CHECK(length(trim("name")) >= 1),
-  price NUMERIC(14, 2) NOT NULL CHECK("price" >= 1),--цена, которая может меняться
-  gramm NUMERIC(10, 2) NOT NULL CHECK("gramm" >= 1),
+  code VARCHAR(12) NOT NULL UNIQUE CHECK(length(trim(code)) >= 1),
+  name VARCHAR(100) NOT NULL CHECK(length(trim(name)) >= 1),
+  price NUMERIC(14, 2) NOT NULL CHECK(price >= 1),--цена, которая может меняться
+  gramm NUMERIC(10, 2) NOT NULL CHECK(gramm >= 1),
   UNIQUE(name, gramm),
-  amount INT NOT NULL CHECK("amount" > 0)--количество на складе
+  amount INT NOT NULL CHECK(amount > 0)--количество на складе
 );
 --заказчики
 CREATE TABLE customers(
   id SERIAL PRIMARY KEY,
-  phone VARCHAR(20) NOT NULL UNIQUE CHECK(length(trim("phone")) >= 3),
-  name VARCHAR(150) NOT NULL CHECK(length(trim("name")) >= 2),
-  city VARCHAR(20) NOT NULL CHECK(length(trim("city")) >= 2),
-  street VARCHAR(20) NOT NULL CHECK(length(trim("street")) >= 2),
-  house VARCHAR(10) NOT NULL CHECK(length(trim("house")) >= 2),
+  phone VARCHAR(20) NOT NULL UNIQUE CHECK(length(trim(phone)) >= 3),
+  name VARCHAR(150) NOT NULL CHECK(length(trim(name)) >= 2),
+  city VARCHAR(20) NOT NULL CHECK(length(trim(city)) >= 2),
+  street VARCHAR(20) NOT NULL CHECK(length(trim(street)) >= 2),
+  house VARCHAR(10) NOT NULL CHECK(length(trim(house)) >= 2),
   room VARCHAR(10) DEFAULT NULL
 );
 --договоры
 CREATE TABLE contracts(
   id BIGSERIAL PRIMARY KEY,
-  number VARCHAR(20) NOT NULL UNIQUE CHECK(length(trim("number")) >= 1),
+  number VARCHAR(20) NOT NULL UNIQUE CHECK(length(trim(number)) >= 1),
   description TEXT,
   date DATE NOT NULL CHECK(date <= CURRENT_DATE)
 );
 --заказы
 CREATE TABLE orders(
   id BIGSERIAL PRIMARY KEY,
-  code VARCHAR(20) NOT NULL UNIQUE CHECK(length(trim("code")) >= 1),
+  code VARCHAR(20) NOT NULL UNIQUE CHECK(length(trim(code)) >= 1),
   id_customer INT REFERENCES customers(id) NOT NULL,
   id_contract INT REFERENCES contracts(id) NOT NULL,
   date DATE NOT NULL CHECK(date <= CURRENT_DATE)
@@ -44,21 +44,21 @@ CREATE TABLE orders(
 CREATE TABLE orders_products(
   id_order INT REFERENCES orders(id) NOT NULL,
   id_product INT REFERENCES products(id) NOT NULL,
-  amount INT NOT NULL CHECK("amount" > 0),
-  price NUMERIC(14, 2) NOT NULL CHECK("price" > 0),--цена, которая не может меняться
+  amount INT NOT NULL CHECK(amount > 0),
+  price NUMERIC(14, 2) NOT NULL CHECK(price > 0),--цена, которая не может меняться
   PRIMARY KEY(id_order, id_product)
 );
 --отгрузки
 CREATE TABLE deliveries(
   id BIGSERIAL PRIMARY KEY,
-  code VARCHAR(20)  NOT NULL UNIQUE CHECK(length(trim("code")) >= 1),
+  code VARCHAR(20)  NOT NULL UNIQUE CHECK(length(trim(code)) >= 1),
   date DATE NOT NULL CHECK(date <= CURRENT_DATE)
 );
 --список отгрузок
 CREATE TABLE deliveries_orders(
   id_deliverie INT REFERENCES deliveries(id) NOT NULL,
   id_order INT REFERENCES orders(id) NOT NULL,
-  amount INT NOT NULL CHECK("amount" > 0)
+  amount INT NOT NULL CHECK(amount > 0)
 );
 --добавляю 4 разных товара
 INSERT INTO products(code, name, price, gramm, amount) VALUES 
